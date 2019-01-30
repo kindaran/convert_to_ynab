@@ -12,7 +12,7 @@ def getFileList(p_path):
 
     try:
         logging.info("***GETTING INPUT DIR FILE LIST")
-        filelist = [file for file in glob.glob(p_path + "\*") if not os.path.isdir(file) and not "_OUTPUT" in file.upper()]
+        filelist = [file for file in glob.glob(p_path + r"\*") if not os.path.isdir(file) and not "_OUTPUT" in file.upper()]
         logging.debug("Found %s files in directory %s" %(len(filelist),p_path))
         if len(filelist) > 0:
             return filelist
@@ -73,12 +73,12 @@ def parseTDRow(p_row):
     try:
         # print 'process data row'
         trade_date = p_row[0].strip()
-        settle_date = p_row[1].strip()
+        # settle_date = p_row[1].strip()
         description = p_row[2].strip()
         action = p_row[3].strip()
-        quantity = p_row[4].strip()
-        price = p_row[5].strip()
-        commission = p_row[6].strip()
+        # quantity = p_row[4].strip()
+        # price = p_row[5].strip()
+        # commission = p_row[6].strip()
         net_amount = p_row[7].strip()
         
         ##build output row
@@ -165,7 +165,7 @@ def parseEQRow(p_row):
         description = p_row[1].strip()
         credit_amount = p_row[2].strip()
         debit_amount = p_row[3].strip()
-        balance = p_row[4].strip()
+        # balance = p_row[4].strip()
         payee = '""'
         
         ##build output row
