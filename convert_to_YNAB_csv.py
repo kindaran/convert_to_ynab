@@ -84,7 +84,7 @@ def parseTDRow(p_row):
 
         ##build output row
         temp = trade_date.split()
-        trans_date = str(g_Months.index(temp[1]) + 1).zfill(2)
+        trans_date = str(g_Months.index(temp[1].upper()) + 1).zfill(2)
         ##get index of trans month from months list, then left pad with zero
         trans_date += "/" + temp[0] + "/" + temp[2]  # format: MM/DD/YYYY
         data_row = trans_date
@@ -171,7 +171,11 @@ def parseEQRow(p_row):
         payee = '""'
 
         ##build output row
-        trans_date = trans_date[4:6] + '/' + trans_date[6:8] + '/' + trans_date[:4]
+        temp = trans_date.split()
+        trans_date = str(g_Months.index(temp[1].upper()) + 1).zfill(2)
+        ##get index of trans month from months list, then left pad with zero
+        trans_date += "/" + temp[0] + "/" + temp[2]  # format: MM/DD/YYYY
+        # trans_date = trans_date[4:6] + '/' + trans_date[6:8] + '/' + trans_date[:4]
         # logging.debug('Trans date: %s'%(trans_date))
 
         data_row = trans_date
@@ -208,7 +212,7 @@ def processEQFile(p_filelist):
 
                 for cols in filebuf:
                     logging.debug("Processing row: %s" % (cols))
-                    logging.debug("Cols length: %s" % (len(cols)))
+                    # logging.debug("Cols length: %s" % (len(cols)))
                     ##skip header rows
                     if len(cols) == 0:                  ##empty row
                         continue
@@ -285,7 +289,7 @@ def main():
 ##########
 g_LoggingLevel = logging.INFO
 
-g_Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+g_Months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 g_Delim = ','
 g_CSVHeader = 'Date,Payee,Memo,Outflow,Inflow\n'
 
