@@ -208,10 +208,13 @@ def processEQFile(p_filelist):
 
                 for cols in filebuf:
                     logging.debug("Processing row: %s" % (cols))
+                    logging.debug("Cols length: %s" % (len(cols)))
                     ##skip header rows
-                    if cols[0].find('Date') >= 0:
+                    if len(cols) == 0:                  ##empty row
                         continue
-                    elif len(cols[0].strip()) == 0:  ##empty row
+                    elif cols[0].find('Date') >= 0:
+                        continue
+                    elif len(cols[0].strip()) == 0:     ##empty row
                         continue
                     ##process data rows
                     else:
@@ -238,23 +241,11 @@ def processEQFile(p_filelist):
 
 # end processTDFile
 
-if __name__ == '__main__':
+##########
+## Main
+##########
 
-    ##########
-    ## Globals
-    ##########
-    g_LoggingLevel = logging.INFO
-
-    g_Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    g_Delim = ','
-    g_CSVHeader = 'Date,Payee,Memo,Outflow,Inflow\n'
-
-    g_InputPath = sys.argv[1]
-    g_OutputPath = sys.argv[2]
-
-    ##########
-    ## Main
-    ##########
+def main():
 
     filetype = sys.argv[3]
 
@@ -287,5 +278,22 @@ if __name__ == '__main__':
             g_InputPath, g_OutputPath, filetype, msg))
 
     logging.info('*****PROGRAM END')
+#end main()
 
+##########
+## Globals
+##########
+g_LoggingLevel = logging.DEBUG
+
+g_Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+g_Delim = ','
+g_CSVHeader = 'Date,Payee,Memo,Outflow,Inflow\n'
+
+g_InputPath = sys.argv[1]
+g_OutputPath = sys.argv[2]
+
+if __name__ == '__main__':
+
+    main()
+    
 # end if main()
