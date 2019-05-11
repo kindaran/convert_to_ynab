@@ -283,7 +283,7 @@ def main():
 ##########
 ## Globals
 ##########
-g_LoggingLevel = logging.DEBUG
+g_LoggingLevel = logging.INFO
 
 g_Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 g_Delim = ','
