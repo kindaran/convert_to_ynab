@@ -477,7 +477,13 @@ def main():
 
     try:
         ##get file list using FileTypes filters
-        filelist = [file for file in getFileList(g_InputPath) for prefix in g_FileTypes if prefix + "_" in file.upper()]
+        filelist = getFileList(g_InputPath) 
+        if filelist == None:
+            logging.info('*****PROGRAM END')
+            return
+        #end if
+        
+        filelist = [file for file in filelist for prefix in g_FileTypes if prefix + "_" in file.upper()]
         logging.debug("Filelist: %s" % (filelist))
 
         for file in filelist:
@@ -495,8 +501,8 @@ def main():
         msg = str(e)
         logging.error("*****Error in Main. input path: %s  output path: %s  Error: %s" % (
             g_InputPath, g_OutputPath, msg))
+        logging.info('*****PROGRAM END')
 
-    logging.info('*****PROGRAM END')
 #end main()
 
 ##########

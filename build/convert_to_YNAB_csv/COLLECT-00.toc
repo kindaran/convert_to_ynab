@@ -1,8 +1,8 @@
 ([('convert_to_YNAB_csv.exe',
-   'C:\\Users\\kindaran\\Documents\\Python\\convert_to_ynab\\build\\convert_to_YNAB_csv\\convert_to_YNAB_csv.exe',
+   'c:\\Users\\kindaran\\Documents\\Python\\convert_to_ynab\\build\\convert_to_YNAB_csv\\convert_to_YNAB_csv.exe',
    'EXECUTABLE'),
   ('convert_to_YNAB_csv.exe.manifest',
-   'C:\\Users\\kindaran\\Documents\\Python\\convert_to_ynab\\build\\convert_to_YNAB_csv\\convert_to_YNAB_csv.exe.manifest',
+   'c:\\Users\\kindaran\\Documents\\Python\\convert_to_ynab\\build\\convert_to_YNAB_csv\\convert_to_YNAB_csv.exe.manifest',
    'BINARY'),
   ('python37.dll',
    'C:\\Users\\kindaran\\AppData\\Local\\Programs\\Python\\Python37-32\\python37.dll',
@@ -41,5 +41,5 @@
    'C:\\Users\\kindaran\\AppData\\Local\\Programs\\Python\\Python37-32\\DLLs\\libcrypto-1_1.dll',
    'BINARY'),
   ('base_library.zip',
-   'C:\\Users\\kindaran\\Documents\\Python\\convert_to_ynab\\build\\convert_to_YNAB_csv\\base_library.zip',
+   'c:\\Users\\kindaran\\Documents\\Python\\convert_to_ynab\\build\\convert_to_YNAB_csv\\base_library.zip',
    'DATA')],)

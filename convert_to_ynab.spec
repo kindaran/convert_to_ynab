@@ -3,8 +3,8 @@
 block_cipher = None
 
 
-a = Analysis(['convert_to_YNAB_csv.py'],
-             pathex=['c:\\Users\\kindaran\\Documents\\Python\\convert_to_ynab'],
+a = Analysis(['convert_to_ynab.py'],
+             pathex=['C:\\Users\\kindaran\\Documents\\Python\\convert_to_ynab'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -21,7 +21,7 @@ exe = EXE(pyz,
           a.scripts,
           [],
           exclude_binaries=True,
-          name='convert_to_YNAB_csv',
+          name='convert_to_ynab',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
@@ -33,4 +33,4 @@ coll = COLLECT(exe,
                a.datas,
                strip=False,
                upx=True,
-               name='convert_to_YNAB_csv')
+               name='convert_to_ynab')
