@@ -295,16 +295,14 @@ def parseMBRow(p_row):
         data_row += g_Delim
         data_row += '"' + description + '"'  ##double quote to handle text with commas
         data_row += g_Delim
-        if amount.startswith('$'):
-            data_row += amount[1:]  ##strip off the dollar sign
+        amount = amount.replace("$","").replace('"',"").replace(",","")     #get rid of $ or " or ,
+        if amount.startswith('-'):
             data_row += g_Delim
-        elif amount.startswith('-'):
-            data_row += amount[1:]  ##strip off the negative sign
-            data_row += g_Delim
+            data_row += amount[1:]
         else:
-            data_row += g_Delim
             data_row += amount
-
+            data_row += g_Delim
+        #end if
         logging.debug("Data row: %s" % (data_row))
         return data_row
     except Exception as e:
@@ -388,16 +386,14 @@ def parseMBSRow(p_row):
         data_row += g_Delim
         data_row += '"' + description + '"'  ##double quote to handle text with commas
         data_row += g_Delim
-        if amount.startswith('$'):
-            data_row += amount[1:]  ##strip off the dollar sign
+        amount = amount.replace("$","").replace('"',"").replace(",","")     #get rid of $ or " or ,
+        if amount.startswith('-'):
             data_row += g_Delim
-        elif amount.startswith('-'):
-            data_row += amount[1:]  ##strip off the negative sign
-            data_row += g_Delim
+            data_row += amount[1:]
         else:
-            data_row += g_Delim
             data_row += amount
-
+            data_row += g_Delim
+        #end if
         logging.debug("Data row: %s" % (data_row))
         return data_row
     except Exception as e:
