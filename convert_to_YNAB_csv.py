@@ -297,11 +297,11 @@ def parseMBRow(p_row):
         data_row += g_Delim
         amount = amount.replace("$","").replace('"',"").replace(",","")     #get rid of $ or " or ,
         if amount.startswith('-'):
-            data_row += g_Delim
             data_row += amount[1:]
-        else:
-            data_row += amount
             data_row += g_Delim
+        else:
+            data_row += g_Delim
+            data_row += amount
         #end if
         logging.debug("Data row: %s" % (data_row))
         return data_row
@@ -388,11 +388,11 @@ def parseMBSRow(p_row):
         data_row += g_Delim
         amount = amount.replace("$","").replace('"',"").replace(",","")     #get rid of $ or " or ,
         if amount.startswith('-'):
-            data_row += g_Delim
             data_row += amount[1:]
-        else:
-            data_row += amount
             data_row += g_Delim
+        else:
+            data_row += g_Delim
+            data_row += amount
         #end if
         logging.debug("Data row: %s" % (data_row))
         return data_row
