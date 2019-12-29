@@ -298,9 +298,9 @@ def parseMBRow(p_row):
         amount = amount.replace("$","").replace('"',"").replace(",","")     #get rid of $ or " or ,
         if amount.startswith('-'):
             data_row += g_Delim
-            data_row += amount            
+            data_row += amount[1:]   
         else:
-            data_row += amount[1:]
+            data_row += amount
             data_row += g_Delim
         #end if
         logging.debug("Data row: %s" % (data_row))
