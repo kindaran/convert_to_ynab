@@ -4,6 +4,8 @@ import csv
 import logging
 import glob
 import shutil
+import xlrd
+from decimal import Decimal
 from datetime import datetime
 
 
@@ -456,6 +458,86 @@ def processMBSFile(p_file):
 
 # end processMBFile
 
+def parseQTRow(p_row):
+    global g_Delim
+
+    try:
+        # process data row
+        trans_date = p_row[0].strip()[:10]
+        payee = p_row[2].strip()
+        description = p_row[4].strip()
+        amount = p_row[9].strip()
+
+        ##build output row
+        data_row = trans_date
+        data_row += g_Delim
+        data_row += '"' + payee + '"'
+        data_row += g_Delim
+        data_row += '"' + description + '"'  ##double quote to handle text with commas
+        data_row += g_Delim
+        amount = amount.replace("$","").replace('"',"").replace(",","")     #get rid of $ or " or ,
+        num_amount = Decimal(amount) * -1   ##need to flip the sign for YNAB account
+        amount = str(num_amount)
+        data_row += amount
+
+        logging.debug("Data row: %s" % (data_row))
+        return data_row
+    except Exception as e:
+        msg = str(e)
+        logging.error("*****Error in parseMBRow. p_row: %s Error: %s" % (p_row, msg))
+        return None
+
+# END parseMBRow
+
+def processQTFile(p_file):
+    global g_Delim
+    global g_LoadedPath
+
+    file_data = []
+    file = xlrd.open_workbook(p_file)
+    worksheet = file.sheet_by_index(0)
+
+    try:
+        ##parse file and generate converted rows
+        logging.info("***PROCESSING FILE: %s with %d rows" % (p_file,worksheet.nrows))
+
+        for row in range(worksheet.nrows):
+            logging.debug("Processing row: %s" % (worksheet.row(row)))
+            ##skip header rows
+            if row == 0: continue
+            ##process data rows
+            else:
+                logging.debug("Row values: %s" % (worksheet.row_values(row)))
+                data = parseQTRow(worksheet.row_values(row))
+
+                if data == None:
+                    logging.warning("Error parsing data row")
+                    return
+                else:
+                    file_data.append(data)
+                #end if
+            # end if parse row
+        # end for
+        logging.info("File: %s  %d rows processed" % (p_file, len(file_data)))
+
+        ##output converted rows
+        output_filename = generateOutputFilename(p_file)
+        if output_filename != None:
+            writeFile(output_filename, file_data)
+        else:
+            logging.warning("WARNING: Invalid output filename***")
+        # end if
+        file_data = []
+
+        moveFile(p_file,g_LoadedPath)
+
+    except Exception as e:
+        msg = str(e)
+        logging.error(
+            "*****Error in processQTFile. Current file: %s  Error: %s" % (p_file, msg))
+
+# end processMBFile
+
 ##########
 ## Main
 ##########
@@ -491,6 +573,8 @@ def main():
                 processMBFile(file)
             elif "MBS_" in file.upper():
                 processMBSFile(file)
+            elif "QT_" in file.upper():
+                processQTFile(file)
             #end if
         #end for
     except Exception as e:
@@ -509,7 +593,7 @@ g_LoggingLevel = logging.INFO
 g_Months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 g_Delim = ','
 g_CSVHeader = 'Date,Payee,Memo,Outflow,Inflow\n'
-g_FileTypes = ['TD','EQ','MB','MBS']
+g_FileTypes = ['TD','EQ','MB','MBS','QT']
 
 g_InputPath = sys.argv[1]
 g_OutputPath = sys.argv[2]
