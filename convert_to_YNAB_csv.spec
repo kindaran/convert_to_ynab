@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['convert_to_YNAB_csv.py'],
-             pathex=['c:\\Users\\kindaran\\Documents\\Python\\convert_to_ynab'],
+             pathex=['C:\\Users\\kindaran\\Documents\\Python\\convert_to_ynab'],
              binaries=[],
              datas=[],
              hiddenimports=[],
