@@ -1,5 +1,5 @@
 # Convert To YNAB
-This is a Python project I created to convert CSV files (and now also an Excel file) from various banks to a format that loads into my budget software (called YNAB or "You Need A Budget"). It has the following major functions:
+This is a Python project I created to convert CSV files (and now also an Excel file) from various banks to a format that loads into my budget software (called YNAB or "You Need A Budget").
 
 **NOTE: this code represents a specific point in time in my ongoing learning of Python. Certain code usage or patterns don't necessarily represent how I might code today.**
 
