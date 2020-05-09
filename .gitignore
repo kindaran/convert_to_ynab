@@ -1,6 +1,8 @@
+__pycache__/
+.idea/
+.pytest_cache/
+build/
+dist/
+testing/
 __init__.py
-__pycache__/__init__.cpython-37.pyc
-__pycache__/convert_to_YNAB_csv.cpython-37.pyc
-__pycache__/test_convert_to_YNAB_csv.cpython-37-PYTEST.pyc
-__pycache__/convert_to_YNAB_csv.cpython-37.pyc
-__pycache__/test_convert_to_YNAB_csv.cpython-37-PYTEST.pyc
+_config.yml
