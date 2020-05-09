@@ -1,6 +1,7 @@
 __pycache__/
 .idea/
 .pytest_cache/
+.vscode\.ropeproject
 build/
 dist/
 testing/
