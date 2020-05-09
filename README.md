@@ -1,7 +1,7 @@
-# convert_to_ynab
+# Convert To YNAB
 # Bank CSV file conversion to budget software
 
-This is a Python project I created to convert CSV files (and now also an Excel file) from various banks to a format that loads into my budget software. It has the following major functions:
+This is a Python project I created to convert CSV files (and now also an Excel file) from various banks to a format that loads into my budget software (called YNAB or "You Need A Budget"). It has the following major functions:
 
 ## Command Line Params
   * requires a path to source files
