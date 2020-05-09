@@ -22,7 +22,7 @@ There are two parts to processing a file: an overall process flow and "transform
 * opens the file
     * for each row in file do some initial data quality checks to skip garbage rows else sends a row for mapping
 * when all rows are processed, generates an output file name (the source file name + "_output" + currentdatetime
-* writes processed rows to output file
+* writes processed rows to output file in output directory
 * move source file to archive directory
 
 ### Map Source Row to Target Row
