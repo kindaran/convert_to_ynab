@@ -12,6 +12,33 @@ from datetime import datetime
 ##########
 ## Functions
 ##########
+
+def getArgs():
+
+    args = []
+
+    try:
+        logging.info("***RETRIEVING COMMAND LINE ARGS")
+        if len(sys.argv) == 3:
+            sourceFilePath = sys.argv[1]
+            args.append(sourceFilePath)
+            targetFilePath = sys.argv[2]
+            args.append(targetFilePath)
+            logging.debug("Command line arguments used: input_path: %s  output_path: %s " % (
+                sourceFilePath, targetFilePath))
+            return args
+        else:
+            logging.error("Not enough arguments provided.")
+            print(
+                "Incorrect arguments provided\r\nPlease include path to source files and path for output")
+            return None
+    except Exception as e:
+        msg = str(e)
+        logging.error("*****Error in getArgs. Args: %s  Error: %s" %
+                      (sys.argv, msg))
+        return None
+# END DEF
+
 def getFileList(p_path):
     try:
         logging.info("***GETTING INPUT DIR FILE LIST")
@@ -94,12 +121,8 @@ def parseTDRow(p_row):
     try:
         # process data row
         trade_date = p_row[0].strip()
-        # settle_date = p_row[1].strip()
         description = p_row[2].strip()
         action = p_row[3].strip()
-        # quantity = p_row[4].strip()
-        # price = p_row[5].strip()
-        # commission = p_row[6].strip()
         net_amount = p_row[7].strip()
 
         ##build output row
@@ -200,8 +223,6 @@ def parseEQRow(p_row):
         trans_date = str(g_Months.index(temp[1].upper()) + 1).zfill(2)
         ##get index of trans month from months list, then left pad with zero
         trans_date += "/" + temp[0] + "/" + temp[2]  # format: MM/DD/YYYY
-        # trans_date = trans_date[4:6] + '/' + trans_date[6:8] + '/' + trans_date[:4]
-        # logging.debug('Trans date: %s'%(trans_date))
 
         data_row = trans_date
         data_row += g_Delim
@@ -238,7 +259,6 @@ def processEQFile(p_file):
 
             for cols in filebuf:
                 logging.debug("Processing row: %s" % (cols))
-                # logging.debug("Cols length: %s" % (len(cols)))
                 ##skip header rows
                 if len(cols) == 0:                  ##empty row
                     continue
@@ -281,10 +301,8 @@ def parseMBRow(p_row):
 
     try:
         # process data row
-        trans_date = p_row[0].strip()
         post_date = p_row[1].strip()
         description = p_row[2].strip()
-        # reference_num = p_row[3].strip()
         amount = p_row[4].strip()
         payee = description
 
@@ -372,10 +390,8 @@ def parseMBSRow(p_row):
 
     try:
         # process data row
-        # trans_date = p_row[0].strip()
         post_date = p_row[0].strip()
         description = p_row[1].strip()
-        # reference_num = p_row[3].strip()
         amount = p_row[3].strip()
         payee = description
 
@@ -544,16 +560,21 @@ def processQTFile(p_file):
 
 def main():
 
-    # filetype = sys.argv[3]
-
-    logging.basicConfig(level=g_LoggingLevel, format='LOG: %(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
-
-    logging.info('*****PROGRAM START')
-
-    logging.debug("Command line arguments used: input_path: %s  output_path: %s " % (
-        g_InputPath, g_OutputPath))
+    global g_InputPath
+    global g_OutputPath
+    global g_LoadedPath
 
     try:
+        args = getArgs()
+        if args == None:
+            logging.error("Unable to retrieve command line args - EXITING")
+            return
+        #END IF
+
+        g_InputPath = args[0]
+        g_OutputPath = args[1]
+        g_LoadedPath = g_InputPath + r"\loaded"
+
         ##get file list using FileTypes filters
         filelist = getFileList(g_InputPath) 
         if filelist == None:
@@ -581,7 +602,7 @@ def main():
         msg = str(e)
         logging.error("*****Error in Main. input path: %s  output path: %s  Error: %s" % (
             g_InputPath, g_OutputPath, msg))
-        logging.info('*****PROGRAM END')
+
 
 #end main()
 
@@ -590,17 +611,23 @@ def main():
 ##########
 g_LoggingLevel = logging.INFO
 
+logging.basicConfig(level=g_LoggingLevel, format="%(levelname)s: %(asctime)s %(message)s", datefmt="%m/%d/%Y %I:%M:%S %p")
+
+logging.info('*****PROGRAM START')
+
 g_Months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 g_Delim = ','
 g_CSVHeader = 'Date,Payee,Memo,Outflow,Inflow\n'
 g_FileTypes = ['TD','EQ','MB','MBS','QT']
 
-g_InputPath = sys.argv[1]
-g_OutputPath = sys.argv[2]
-g_LoadedPath = g_InputPath + r"\loaded"
+g_InputPath = None
+g_OutputPath = None
+g_LoadedPath = None
 
 if __name__ == '__main__':
 
     main()
     
 # end if main()
+
+logging.info('*****PROGRAM END')
