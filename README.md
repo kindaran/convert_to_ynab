@@ -1,11 +1,16 @@
 # Convert To YNAB
 This is a Python project I created to convert CSV files (and now also an Excel file) from various banks to a format that loads into my budget software (called YNAB or "You Need A Budget"). It has the following major functions:
 
-## Using the Application
+# Using the Application
 The dist/ directory contains a runtime executable of the Python script based on compiling with PyInstaller using default settings. The entire directory needs to be placed on the harddrive and then call the executable. The executable has command line parameters as follows:
-  * requires a path to source files
-  * requires a path to output files
-  * NOTE: source files are moved to a "\loaded" subdirectory under the source file path
+  * requires a path for source files (excluding a final "\\")
+  * requires a path for output files  (excluding a final "\\")
+  * NOTE: source files are archived to a "\loaded" subdirectory under the source file path
+  
+Both of the above paths should exist already. The "loaded" subdirectory does not have to exist. The pathing could potentially be either relative or fully qualified based on how the executable is run and/or located. Fully qualified would be safest.
+
+# Major Functions
+The application performs the following major functions.
 
 ## Find Valid Source Files
 * Retrieves a list of files from the source path
