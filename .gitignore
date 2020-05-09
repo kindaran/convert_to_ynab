@@ -1,9 +1,10 @@
 __pycache__/
 .idea/
 .pytest_cache/
-.vscode\.ropeproject
 build/
 dist/
 testing/
 __init__.py
 _config.yml
+.vscode/.ropeproject/objectdb
+.vscode/.ropeproject/config.py
