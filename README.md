@@ -4,7 +4,7 @@ This is a Python project I created to convert CSV files (and now also an Excel f
 **NOTE: this code represents a specific point in time in my ongoing learning of Python. Certain code usage or patterns don't necessarily represent how I might code today.**
 
 # Using the Application
-The dist/ directory contains a runtime executable of the Python script based on compiling with PyInstaller using default settings. The entire directory needs to be placed on the harddrive and then call the executable. The executable has command line parameters as follows:
+I created an executable with PyInstaller using default settings. This creates a dist directory which needs to be placed on the harddrive and then call the executable. The executable has command line parameters as follows:
   * requires a path for source files (excluding a final "\\")
   * requires a path for output files  (excluding a final "\\")
   * NOTE: source files are archived to a "\loaded" subdirectory under the source file path
