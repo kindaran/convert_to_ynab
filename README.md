@@ -9,7 +9,7 @@ I created an executable with PyInstaller using default settings. This creates a 
   * requires a path for output files  (excluding a final "\\")
   * NOTE: source files are archived to a "\loaded" subdirectory under the source file path
   
-Both of the above paths should exist already. The "loaded" subdirectory does not have to exist. The pathing could potentially be either relative or fully qualified based on how the executable is run and/or located. Fully qualified would be safest.
+Both of the above paths should exist already. The "loaded" subdirectory does not have to exist. Source files cannot already exist in the loaded directory. The pathing could potentially be either relative or fully qualified based on how the executable is run and/or located. Fully qualified would be safest.
 
 The source files themselves are pretty specific to the banks I use. The code would need to be modified for other bank source files. In most cases, these are CSV format. One particular bank export is in Excel format.
 
@@ -22,6 +22,7 @@ The application performs the following major functions.
 
 ## Main Processing
 There are two parts to processing a file: an overall process flow and "transforming" a source row to a target row.
+
 ### Overall Processing
 * opens the file
     * for each row in file do some initial data quality checks to skip garbage rows else sends a row for mapping
