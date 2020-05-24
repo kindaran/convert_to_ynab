@@ -42,7 +42,7 @@ def getArgs():
 def getFileList(p_path):
     try:
         logging.info("***GETTING INPUT DIR FILE LIST")
-        filelist = [file for file in glob.glob(p_path + r"\*") if
+        filelist = [file for file in glob.glob(p_path + r"/*") if
                     not os.path.isdir(file) and not "_OUTPUT" in file.upper()]
         logging.debug("Found %s files in directory %s" % (len(filelist), p_path))
         if len(filelist) > 0:
@@ -66,7 +66,7 @@ def writeFile(p_filename, p_rows):
     try:
         logging.info("***WRITING TO OUTPUT FILE")
         if len(p_rows) > 0:
-            output_file = g_OutputPath + "\\" + p_filename
+            output_file = g_OutputPath + "/" + p_filename
             logging.debug('Writing to file: %s' % (output_file))
             with open(output_file, 'w') as hFile:
                 hFile.write(g_CSVHeader)
@@ -84,7 +84,7 @@ def writeFile(p_filename, p_rows):
 
 def generateOutputFilename(p_filename):
     try:
-        filename = p_filename.split(".")[0].split("\\")[-1]  ##strips the raw filename out of file string
+        filename = p_filename.split(".")[0].split("/")[-1]  ##strips the raw filename out of file string
         current_datetime = datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
         output_filename = filename + "_output_" + current_datetime + ".csv"
         logging.debug("Output filename: %s" % (output_filename))
@@ -573,7 +573,7 @@ def main():
 
         g_InputPath = args[0]
         g_OutputPath = args[1]
-        g_LoadedPath = g_InputPath + r"\loaded"
+        g_LoadedPath = g_InputPath + r"/loaded"
 
         ##get file list using FileTypes filters
         filelist = getFileList(g_InputPath) 
