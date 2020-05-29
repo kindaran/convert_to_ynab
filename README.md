@@ -18,7 +18,7 @@ The application performs the following major functions.
 
 ## Find Valid Source Files
 * Retrieves a list of files from the source path
-* Parses the file list for any files that have a predefined prefix + "_" 
+* Parses the file list for any files that have a predefined prefix 
 
 ## Main Processing
 There are two parts to processing a file: an overall process flow and "transforming" a source row to a target row.
