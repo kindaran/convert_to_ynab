@@ -6,6 +6,5 @@ dist/
 testing/
 __init__.py
 _config.yml
-.vscode/.ropeproject/objectdb
-.vscode/.ropeproject/config.py
+.vscode/
 *.spec
