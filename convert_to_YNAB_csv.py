@@ -219,10 +219,14 @@ def parseEQRow(p_row):
         payee = '""'
 
         ##build output row
-        temp = trans_date.split()
-        trans_date = str(g_Months.index(temp[1].upper()) + 1).zfill(2)
-        ##get index of trans month from months list, then left pad with zero
-        trans_date += "/" + temp[0] + "/" + temp[2]  # format: MM/DD/YYYY
+        """
+            Looks like trans_date format changed. Now YYYY-MM-DD
+            which should be acceptable as is
+        """
+        # temp = trans_date.split("-")
+        # trans_date = str(g_Months.index(temp[1].upper()) + 1).zfill(2)
+        # ##get index of trans month from months list, then left pad with zero
+        # trans_date += "/" + temp[0] + "/" + temp[2]  # format: MM/DD/YYYY
 
         data_row = trans_date
         data_row += g_Delim
