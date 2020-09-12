@@ -333,7 +333,6 @@ def parseMBRow(p_row):
         msg = str(e)
         logging.error("*****Error in parseMBRow. p_row: %s Error: %s" % (p_row, msg))
         return None
-
 # END parseMBRow
 
 def processMBFile(p_file):
@@ -348,20 +347,36 @@ def processMBFile(p_file):
         logging.info("***PROCESSING FILE: %s" % (file))
         with open(file) as csvfile:
             filebuf = csv.reader(csvfile, delimiter=g_Delim)
-
+            
+            count = 1              
             for cols in filebuf:
-                logging.debug("Processing row: %s" % (cols))
-                logging.debug("Cols length: %s" % (len(cols)))
+                logging.debug(f"Current row is {cols}")
+                if count == 1:
+                    row = []
+                    row += [cols[0]]
+                    count +=1
+                    continue
+                elif count < 5:
+                    row += [cols[0]]
+                    count += 1
+                    continue
+                else:
+                    row += [cols[0]]
+                    count = 1
+                #END IF
+                
+                logging.debug("Processing row: %s" % (row))
+                logging.debug("Cols length: %s" % (len(row)))
                 ##skip header rows
-                if len(cols) == 0:                  ##empty row
+                if len(row) == 0:                  ##empty row
                     continue
-                elif cols[0].find('Date') >= 0:
-                    continue
-                elif len(cols[0].strip()) == 0:     ##empty row
-                    continue
+                # elif cols[0].find('Date') >= 0:
+                #     continue
+                # elif len(cols[0].strip()) == 0:     ##empty row
+                #     continue
                 ##process data rows
                 else:
-                    data = parseMBRow(cols)
+                    data = parseMBRow(row)
                     if data == None:
                         logging.warning("Error parsing data row")
                         return
