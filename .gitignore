@@ -8,3 +8,4 @@ __init__.py
 _config.yml
 .vscode/
 *.spec
+*.csv
