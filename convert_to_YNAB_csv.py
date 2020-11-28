@@ -9,9 +9,9 @@ from decimal import Decimal
 from datetime import datetime
 
 
-##########
-## Functions
-##########
+#####
+# Functions
+#####
 
 def getArgs():
 
@@ -39,16 +39,18 @@ def getArgs():
         return None
 # END DEF
 
+
 def getFileList(p_path):
     try:
         logging.info("***GETTING INPUT DIR FILE LIST")
-        filelist = [file for file in glob.glob(p_path + r"/*") if
-                    not os.path.isdir(file) and not "_OUTPUT" in file.upper()]
+        filelist = [file for file in glob.glob(p_path + r"\\*") if
+                    not os.path.isdir(file) and "_OUTPUT" not in file.upper()]
         logging.debug("Found %s files in directory %s" % (len(filelist), p_path))
         if len(filelist) > 0:
             return filelist
         else:
-            logging.warning("***WARNING: no files found in path %s matching search criteria" % (p_path))
+            logging.warning(
+                "***WARNING: no files found in path %s matching search criteria" % (p_path))
             return None
         # end if
     except Exception as e:
@@ -66,7 +68,7 @@ def writeFile(p_filename, p_rows):
     try:
         logging.info("***WRITING TO OUTPUT FILE")
         if len(p_rows) > 0:
-            output_file = g_OutputPath + "/" + p_filename
+            output_file = g_OutputPath + "\\" + p_filename
             logging.debug('Writing to file: %s' % (output_file))
             with open(output_file, 'w') as hFile:
                 hFile.write(g_CSVHeader)
@@ -77,21 +79,24 @@ def writeFile(p_filename, p_rows):
         # end if
     except Exception as e:
         msg = str(e)
-        logging.error("*****Error in writeFile. p_filename: %s  p_rows: %s  Error: %s" % (p_filename, p_rows, msg))
+        logging.error("*****Error in writeFile. p_filename: %s  p_rows: %s  Error: %s" %
+                      (p_filename, p_rows, msg))
 
 
 # end writeFile
 
 def generateOutputFilename(p_filename):
     try:
-        filename = p_filename.split(".")[0].split("/")[-1]  ##strips the raw filename out of file string
+        # strips the raw filename out of file string
+        filename = p_filename.split(".")[0].split("\\")[-1]
         current_datetime = datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
         output_filename = filename + "_output_" + current_datetime + ".csv"
         logging.debug("Output filename: %s" % (output_filename))
         return output_filename
     except Exception as e:
         msg = str(e)
-        logging.error("*****Error in generateOutputFilename. p_filename: %s  Error: %s" % (p_filename, msg))
+        logging.error("*****Error in generateOutputFilename. p_filename: %s  Error: %s" %
+                      (p_filename, msg))
         return None
 
 
@@ -100,19 +105,21 @@ def generateOutputFilename(p_filename):
 def moveFile(p_source, p_dest):
 
     try:
-        logging.info("***MOVING FILE FROM %s TO %s" %(p_source,p_dest))
-        if os.path.isdir(p_dest) == False:
-            logging.debug("%s not found - creating it" %(p_dest))
+        logging.info("***MOVING FILE FROM %s TO %s" % (p_source, p_dest))
+        if os.path.isdir(p_dest) is False:
+            logging.debug("%s not found - creating it" % (p_dest))
             os.mkdir(p_dest)
-        #end if
-        shutil.move(p_source,p_dest)
+        # end if
+        shutil.move(p_source, p_dest)
         logging.debug("File moved.")
     except Exception as e:
         msg = str(e)
-        logging.error("*****Error in moveFile. p_source: %s  p_dest: %s  Error: %s" % (p_source, p_dest, msg))
-        return None        
+        logging.error("*****Error in moveFile. p_source: %s  p_dest: %s  Error: %s" %
+                      (p_source, p_dest, msg))
+        return None
 
-#end moveFile
+# end moveFile
+
 
 def parseTDRow(p_row):
     global g_Months
@@ -125,19 +132,19 @@ def parseTDRow(p_row):
         action = p_row[3].strip()
         net_amount = p_row[7].strip()
 
-        ##build output row
+        # build output row
         temp = trade_date.split()
         trans_date = str(g_Months.index(temp[1].upper()) + 1).zfill(2)
-        ##get index of trans month from months list, then left pad with zero
+        # get index of trans month from months list, then left pad with zero
         trans_date += "/" + temp[0] + "/" + temp[2]  # format: MM/DD/YYYY
         data_row = trans_date
         data_row += g_Delim
         data_row += action
         data_row += g_Delim
-        data_row += '"' + description + '"'  ##double quote to handle text with commas
+        data_row += '"' + description + '"'  # double quote to handle text with commas
         data_row += g_Delim
         if net_amount.startswith('-'):
-            data_row += net_amount[1:]  ##strip off the negative sign
+            data_row += net_amount[1:]  # strip off the negative sign
             data_row += g_Delim
         else:
             data_row += g_Delim
@@ -161,50 +168,51 @@ def processTDFile(p_file):
     file = p_file
 
     try:
-        ##parse file and generate converted rows
+        # parse file and generate converted rows
         logging.info("***PROCESSING FILE: %s" % (file))
         with open(file) as csvfile:
             filebuf = csv.reader(csvfile, delimiter=g_Delim)
 
             for cols in filebuf:
                 # print cols
-                ##skip header rows
+                # skip header rows
                 if cols[0].find('As of') >= 0:
                     continue
                 elif cols[0].find('Account') >= 0:
                     continue
                 elif cols[0].find('Trade') >= 0:
                     continue
-                elif len(cols) == 2:  ##empty row
+                elif len(cols) == 2:  # empty row
                     continue
-                ##process data rows
+                # process data rows
                 else:
                     data = parseTDRow(cols)
-                    if data == None:
+                    if data is None:
                         logging.warning("Error parsing data row")
                         return
                     else:
                         file_data.append(data)
-                    #end if                        
+                    # end if
                 # end if parse row
             # end for
             logging.info("File: %s  %d rows processed" % (file, len(file_data)))
 
-            ##output converted rows
+            # output converted rows
             output_filename = generateOutputFilename(file)
-            if output_filename != None:
+            if output_filename is not None:
                 writeFile(output_filename, file_data)
             else:
                 logging.warning("WARNING: Invalid output filename***")
             # end if
             file_data = []
         # end with
-        moveFile(file,g_LoadedPath)
+        moveFile(file, g_LoadedPath)
     except Exception as e:
         msg = str(e)
         logging.error(
             "*****Error in processTDFile. Current file: %s  Error: %s" % (file, msg))
 # end processTDFile
+
 
 def parseEQRow(p_row):
     global g_Delim
@@ -218,25 +226,25 @@ def parseEQRow(p_row):
         # balance = p_row[4].strip()
         payee = '""'
 
-        ##build output row
+        # build output row
         """
             Looks like trans_date format changed. Now YYYY-MM-DD
             which should be acceptable as is
         """
         # temp = trans_date.split("-")
         # trans_date = str(g_Months.index(temp[1].upper()) + 1).zfill(2)
-        # ##get index of trans month from months list, then left pad with zero
+        # #get index of trans month from months list, then left pad with zero
         # trans_date += "/" + temp[0] + "/" + temp[2]  # format: MM/DD/YYYY
 
         data_row = trans_date
         data_row += g_Delim
         data_row += payee
         data_row += g_Delim
-        data_row += '"' + description + '"'  ##double quote to handle text with commas
+        data_row += '"' + description + '"'  # double quote to handle text with commas
         data_row += g_Delim
-        data_row += debit_amount[1:].strip()  ##strip off dollar sign
+        data_row += debit_amount[1:].strip()  # strip off dollar sign
         data_row += g_Delim
-        data_row += credit_amount[1:].strip()  ##strip off dollar sign
+        data_row += credit_amount[1:].strip()  # strip off dollar sign
 
         logging.debug("Data row: %s" % (data_row))
         return data_row
@@ -256,49 +264,150 @@ def processEQFile(p_file):
     file = p_file
 
     try:
-        ##parse file and generate converted rows
+        # parse file and generate converted rows
         logging.info("***PROCESSING FILE: %s" % (file))
         with open(file) as csvfile:
             filebuf = csv.reader(csvfile, delimiter=g_Delim)
 
             for cols in filebuf:
                 logging.debug("Processing row: %s" % (cols))
-                ##skip header rows
-                if len(cols) == 0:                  ##empty row
+                # skip header rows
+                if len(cols) == 0:  # empty row
                     continue
                 elif cols[0].find('Date') >= 0:
                     continue
-                elif len(cols[0].strip()) == 0:     ##empty row
+                elif len(cols[0].strip()) == 0:  # empty row
                     continue
-                ##process data rows
+                # process data rows
                 else:
                     data = parseEQRow(cols)
-                    if data == None:
+                    if data is None:
                         logging.warning("Error parsing data row")
                         return
                     else:
                         file_data.append(data)
-                    #end if                        
+                    # end if
                 # end if parse row
             # end for
             logging.info("File: %s  %d rows processed" % (file, len(file_data)))
 
-            ##output converted rows
+            # output converted rows
             output_filename = generateOutputFilename(file)
-            if output_filename != None:
+            if output_filename is not None:
                 writeFile(output_filename, file_data)
             else:
                 logging.warning("WARNING: Invalid output filename***")
             # end if
             file_data = []
         # end with
-        moveFile(file,g_LoadedPath)
+        moveFile(file, g_LoadedPath)
     except Exception as e:
         msg = str(e)
         logging.error(
             "*****Error in processEQFile. urrent file: %s  Error: %s" % (file, msg))
 
 # end processEQFile
+
+
+def parseEQTRow(p_row):
+    global g_Delim
+
+    try:
+        # process data row
+        trans_date = p_row[0].strip()
+        description = p_row[1].strip()
+        amount = p_row[2].strip()
+        # debit_amount = p_row[3].strip()
+        # balance = p_row[4].strip()
+        payee = '""'
+
+        # build output row
+        """
+            Looks like trans_date format changed. Now YYYY-MM-DD
+            which should be acceptable as is
+        """
+        # temp = trans_date.split("-")
+        # trans_date = str(g_Months.index(temp[1].upper()) + 1).zfill(2)
+        # #get index of trans month from months list, then left pad with zero
+        # trans_date += "/" + temp[0] + "/" + temp[2]  # format: MM/DD/YYYY
+
+        data_row = trans_date
+        data_row += g_Delim
+        data_row += payee
+        data_row += g_Delim
+        data_row += '"' + description + '"'  # double quote to handle text with commas
+        data_row += g_Delim
+        amount = amount[1:].strip()  # strip off dollar sign
+        if amount.startswith('-'):
+            data_row += amount[1:]
+            data_row += g_Delim
+        else:
+            data_row += g_Delim
+            data_row += amount
+        # end if
+
+        logging.debug("Data row: %s" % (data_row))
+        return data_row
+    except Exception as e:
+        msg = str(e)
+        logging.error("*****Error in parseEQTRow. p_row: %s Error: %s" % (p_row, msg))
+        return None
+
+
+# END parseEQRow
+
+def processEQTFile(p_file):
+    global g_Delim
+    global g_LoadedPath
+
+    file_data = []
+    file = p_file
+
+    try:
+        # parse file and generate converted rows
+        logging.info("***PROCESSING FILE: %s" % (file))
+        with open(file) as csvfile:
+            filebuf = csv.reader(csvfile, delimiter=g_Delim)
+
+            for cols in filebuf:
+                logging.debug("Processing row: %s" % (cols))
+                # skip header rows
+                if len(cols) == 0:  # empty row
+                    continue
+                elif cols[0].find('Date') >= 0:
+                    continue
+                elif len(cols[0].strip()) == 0:  # empty row
+                    continue
+                # process data rows
+                else:
+                    data = parseEQTRow(cols)
+                    if data is None:
+                        logging.warning("Error parsing data row")
+                        return
+                    else:
+                        file_data.append(data)
+                    # end if
+                # end if parse row
+            # end for
+            logging.info("File: %s  %d rows processed" % (file, len(file_data)))
+
+            # output converted rows
+            output_filename = generateOutputFilename(file)
+            if output_filename is not None:
+                writeFile(output_filename, file_data)
+            else:
+                logging.warning("WARNING: Invalid output filename***")
+            # end if
+            file_data = []
+        # end with
+        moveFile(file, g_LoadedPath)
+    except Exception as e:
+        msg = str(e)
+        logging.error(
+            "*****Error in processEQTFile. Current file: %s  Error: %s" % (file, msg))
+
+# end processEQFile
+
 
 def parseMBRow(p_row):
     global g_Delim
@@ -310,23 +419,23 @@ def parseMBRow(p_row):
         amount = p_row[4].strip()
         payee = description
 
-        ##build output row
-        logging.debug('Trans date: %s'%(post_date))
+        # build output row
+        logging.debug('Trans date: %s' % (post_date))
 
         data_row = post_date
         data_row += g_Delim
         data_row += '"' + payee + '"'
         data_row += g_Delim
-        data_row += '"' + description + '"'  ##double quote to handle text with commas
+        data_row += '"' + description + '"'  # double quote to handle text with commas
         data_row += g_Delim
-        amount = amount.replace("$","").replace('"',"").replace(",","")     #get rid of $ or " or ,
+        amount = amount.replace("$", "").replace('"', "").replace(",", "")  # get rid of $ or " or ,
         if amount.startswith('-'):
             data_row += g_Delim
-            data_row += amount[1:]   
+            data_row += amount[1:]
         else:
             data_row += amount
             data_row += g_Delim
-        #end if
+        # end if
         logging.debug("Data row: %s" % (data_row))
         return data_row
     except Exception as e:
@@ -334,6 +443,7 @@ def parseMBRow(p_row):
         logging.error("*****Error in parseMBRow. p_row: %s Error: %s" % (p_row, msg))
         return None
 # END parseMBRow
+
 
 def processMBFile(p_file):
     global g_Delim
@@ -343,18 +453,18 @@ def processMBFile(p_file):
     file = p_file
 
     try:
-        ##parse file and generate converted rows
+        # parse file and generate converted rows
         logging.info("***PROCESSING FILE: %s" % (file))
         with open(file) as csvfile:
             filebuf = csv.reader(csvfile, delimiter=g_Delim)
-            
-            count = 1              
+
+            count = 1
             for cols in filebuf:
                 logging.debug(f"Current row is {cols}")
                 if count == 1:
                     row = []
                     row += [cols[0]]
-                    count +=1
+                    count += 1
                     continue
                 elif count < 5:
                     row += [cols[0]]
@@ -363,46 +473,47 @@ def processMBFile(p_file):
                 else:
                     row += [cols[0]]
                     count = 1
-                #END IF
-                
+                # END IF
+
                 logging.debug("Processing row: %s" % (row))
                 logging.debug("Cols length: %s" % (len(row)))
-                ##skip header rows
-                if len(row) == 0:                  ##empty row
+                # skip header rows
+                if len(row) == 0:  # empty row
                     continue
                 # elif cols[0].find('Date') >= 0:
                 #     continue
-                # elif len(cols[0].strip()) == 0:     ##empty row
+                # elif len(cols[0].strip()) == 0:     #empty row
                 #     continue
-                ##process data rows
+                # process data rows
                 else:
                     data = parseMBRow(row)
-                    if data == None:
+                    if data is None:
                         logging.warning("Error parsing data row")
                         return
                     else:
                         file_data.append(data)
-                    #end if                    
+                    # end if
                 # end if parse row
             # end for
             logging.info("File: %s  %d rows processed" % (file, len(file_data)))
 
-            ##output converted rows
+            # output converted rows
             output_filename = generateOutputFilename(file)
-            if output_filename != None:
+            if output_filename is not None:
                 writeFile(output_filename, file_data)
             else:
                 logging.warning("WARNING: Invalid output filename***")
             # end if
             file_data = []
         # end with
-        moveFile(file,g_LoadedPath)
+        moveFile(file, g_LoadedPath)
     except Exception as e:
         msg = str(e)
         logging.error(
             "*****Error in processMBFile. Current file: %s  Error: %s" % (file, msg))
 
 # end processMBFile
+
 
 def parseMBSRow(p_row):
     global g_Delim
@@ -414,23 +525,23 @@ def parseMBSRow(p_row):
         amount = p_row[3].strip()
         payee = description
 
-        ##build output row
-        logging.debug('Trans date: %s'%(post_date))
+        # build output row
+        logging.debug('Trans date: %s' % (post_date))
 
         data_row = post_date
         data_row += g_Delim
         data_row += '"' + payee + '"'
         data_row += g_Delim
-        data_row += '"' + description + '"'  ##double quote to handle text with commas
+        data_row += '"' + description + '"'  # double quote to handle text with commas
         data_row += g_Delim
-        amount = amount.replace("$","").replace('"',"").replace(",","")     #get rid of $ or " or ,
+        amount = amount.replace("$", "").replace('"', "").replace(",", "")  # get rid of $ or " or ,
         if amount.startswith('-'):
             data_row += amount[1:]
             data_row += g_Delim
         else:
             data_row += g_Delim
             data_row += amount
-        #end if
+        # end if
         logging.debug("Data row: %s" % (data_row))
         return data_row
     except Exception as e:
@@ -440,6 +551,7 @@ def parseMBSRow(p_row):
 
 # END parseMBRow
 
+
 def processMBSFile(p_file):
     global g_Delim
     global g_LoadedPath
@@ -448,7 +560,7 @@ def processMBSFile(p_file):
     file = p_file
 
     try:
-        ##parse file and generate converted rows
+        # parse file and generate converted rows
         logging.info("***PROCESSING FILE: %s" % (file))
         with open(file) as csvfile:
             filebuf = csv.reader(csvfile, delimiter=g_Delim)
@@ -456,42 +568,43 @@ def processMBSFile(p_file):
             for cols in filebuf:
                 logging.debug("Processing row: %s" % (cols))
                 logging.debug("Cols length: %s" % (len(cols)))
-                ##skip header rows
-                if len(cols) == 0:                  ##empty row
+                # skip header rows
+                if len(cols) == 0:  # empty row
                     continue
                 elif cols[0].find('Date') >= 0:
                     continue
-                elif len(cols[0].strip()) == 0:     ##empty row
+                elif len(cols[0].strip()) == 0:  # empty row
                     continue
-                ##process data rows
+                # process data rows
                 else:
                     data = parseMBSRow(cols)
-                    if data == None:
+                    if data is None:
                         logging.warning("Error parsing data row")
                         return
                     else:
                         file_data.append(data)
-                    #end if
+                    # end if
                 # end if parse row
             # end for
             logging.info("File: %s  %d rows processed" % (file, len(file_data)))
 
-            ##output converted rows
+            # output converted rows
             output_filename = generateOutputFilename(file)
-            if output_filename != None:
+            if output_filename is not None:
                 writeFile(output_filename, file_data)
             else:
                 logging.warning("WARNING: Invalid output filename***")
             # end if
             file_data = []
         # end with
-        moveFile(file,g_LoadedPath)
+        moveFile(file, g_LoadedPath)
     except Exception as e:
         msg = str(e)
         logging.error(
             "*****Error in processMBSFile. Current file: %s  Error: %s" % (file, msg))
 
 # end processMBFile
+
 
 def parseQTRow(p_row):
     global g_Delim
@@ -503,15 +616,15 @@ def parseQTRow(p_row):
         description = p_row[4].strip()
         amount = p_row[9].strip()
 
-        ##build output row
+        # build output row
         data_row = trans_date
         data_row += g_Delim
         data_row += '"' + payee + '"'
         data_row += g_Delim
-        data_row += '"' + description + '"'  ##double quote to handle text with commas
+        data_row += '"' + description + '"'  # double quote to handle text with commas
         data_row += g_Delim
-        amount = amount.replace("$","").replace('"',"").replace(",","")     #get rid of $ or " or ,
-        num_amount = Decimal(amount) * -1   ##need to flip the sign for YNAB account
+        amount = amount.replace("$", "").replace('"', "").replace(",", "")  # get rid of $ or " or ,
+        num_amount = Decimal(amount) * -1  # need to flip the sign for YNAB account
         amount = str(num_amount)
         data_row += amount
 
@@ -524,6 +637,7 @@ def parseQTRow(p_row):
 
 # END parseMBRow
 
+
 def processQTFile(p_file):
     global g_Delim
     global g_LoadedPath
@@ -533,38 +647,39 @@ def processQTFile(p_file):
     worksheet = file.sheet_by_index(0)
 
     try:
-        ##parse file and generate converted rows
-        logging.info("***PROCESSING FILE: %s with %d rows" % (p_file,worksheet.nrows))
+        # parse file and generate converted rows
+        logging.info("***PROCESSING FILE: %s with %d rows" % (p_file, worksheet.nrows))
 
         for row in range(worksheet.nrows):
             logging.debug("Processing row: %s" % (worksheet.row(row)))
-            ##skip header rows
-            if row == 0: continue
-            ##process data rows
+            # skip header rows
+            if row == 0:
+                continue
+            # process data rows
             else:
                 logging.debug("Row values: %s" % (worksheet.row_values(row)))
                 data = parseQTRow(worksheet.row_values(row))
 
-                if data == None:
+                if data is None:
                     logging.warning("Error parsing data row")
                     return
                 else:
                     file_data.append(data)
-                #end if
+                # end if
             # end if parse row
         # end for
         logging.info("File: %s  %d rows processed" % (p_file, len(file_data)))
 
-        ##output converted rows
+        # output converted rows
         output_filename = generateOutputFilename(p_file)
-        if output_filename != None:
+        if output_filename is not None:
             writeFile(output_filename, file_data)
         else:
             logging.warning("WARNING: Invalid output filename***")
         # end if
         file_data = []
 
-        moveFile(p_file,g_LoadedPath)
+        moveFile(p_file, g_LoadedPath)
 
     except Exception as e:
         msg = str(e)
@@ -573,9 +688,10 @@ def processQTFile(p_file):
 
 # end processMBFile
 
-##########
-## Main
-##########
+#####
+# Main
+#####
+
 
 def main():
 
@@ -585,22 +701,22 @@ def main():
 
     try:
         args = getArgs()
-        if args == None:
+        if args is None:
             logging.error("Unable to retrieve command line args - EXITING")
             return
-        #END IF
+        # END IF
 
         g_InputPath = args[0]
         g_OutputPath = args[1]
-        g_LoadedPath = g_InputPath + r"/loaded"
+        g_LoadedPath = g_InputPath + r"\\loaded"
 
-        ##get file list using FileTypes filters
-        filelist = getFileList(g_InputPath) 
-        if filelist == None:
+        # get file list using FileTypes filters
+        filelist = getFileList(g_InputPath)
+        if filelist is None:
             logging.info('*****PROGRAM END')
             return
-        #end if
-        
+        # end if
+
         filelist = [file for file in filelist for prefix in g_FileTypes if prefix + "_" in file.upper()]
         logging.debug("Filelist: %s" % (filelist))
 
@@ -609,35 +725,38 @@ def main():
                 processTDFile(file)
             elif "EQ_" in file.upper():
                 processEQFile(file)
+            elif "EQT_" in file.upper():
+                processEQTFile(file)
             elif "MB_" in file.upper():
                 processMBFile(file)
             elif "MBS_" in file.upper():
                 processMBSFile(file)
-            elif "QT_" in file.upper():
+            elif "QU_" in file.upper():
                 processQTFile(file)
-            #end if
-        #end for
+            # end if
+        # end for
     except Exception as e:
         msg = str(e)
         logging.error("*****Error in Main. input path: %s  output path: %s  Error: %s" % (
             g_InputPath, g_OutputPath, msg))
 
 
-#end main()
+# end main()
 
-##########
-## Globals
-##########
-g_LoggingLevel = logging.INFO
+#####
+# Globals
+#####
+g_LoggingLevel = logging.DEBUG
 
-logging.basicConfig(level=g_LoggingLevel, format="%(levelname)s: %(asctime)s %(message)s", datefmt="%m/%d/%Y %I:%M:%S %p")
+logging.basicConfig(level=g_LoggingLevel,
+                    format="%(levelname)s: %(asctime)s %(message)s", datefmt="%m/%d/%Y %I:%M:%S %p")
 
 logging.info('*****PROGRAM START')
 
 g_Months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 g_Delim = ','
 g_CSVHeader = 'Date,Payee,Memo,Outflow,Inflow\n'
-g_FileTypes = ['TD','EQ','MB','MBS','QT']
+g_FileTypes = ['TD', 'EQ', 'MB', 'MBS', 'QU', 'EQT']
 
 g_InputPath = None
 g_OutputPath = None
@@ -646,7 +765,7 @@ g_LoadedPath = None
 if __name__ == '__main__':
 
     main()
-    
+
 # end if main()
 
 logging.info('*****PROGRAM END')
