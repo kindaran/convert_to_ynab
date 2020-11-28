@@ -746,7 +746,7 @@ def main():
 #####
 # Globals
 #####
-g_LoggingLevel = logging.DEBUG
+g_LoggingLevel = logging.INFO
 
 logging.basicConfig(level=g_LoggingLevel,
                     format="%(levelname)s: %(asctime)s %(message)s", datefmt="%m/%d/%Y %I:%M:%S %p")
