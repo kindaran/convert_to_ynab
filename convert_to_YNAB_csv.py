@@ -43,7 +43,7 @@ def getArgs():
 def getFileList(p_path):
     try:
         logging.info("***GETTING INPUT DIR FILE LIST")
-        filelist = [file for file in glob.glob(p_path + r"\\*") if
+        filelist = [file for file in glob.glob(p_path + r"/*") if
                     not os.path.isdir(file) and "_OUTPUT" not in file.upper()]
         logging.debug("Found %s files in directory %s" % (len(filelist), p_path))
         if len(filelist) > 0:
@@ -68,7 +68,7 @@ def writeFile(p_filename, p_rows):
     try:
         logging.info("***WRITING TO OUTPUT FILE")
         if len(p_rows) > 0:
-            output_file = g_OutputPath + "\\" + p_filename
+            output_file = g_OutputPath + "/" + p_filename
             logging.debug('Writing to file: %s' % (output_file))
             with open(output_file, 'w') as hFile:
                 hFile.write(g_CSVHeader)
@@ -88,7 +88,7 @@ def writeFile(p_filename, p_rows):
 def generateOutputFilename(p_filename):
     try:
         # strips the raw filename out of file string
-        filename = p_filename.split(".")[0].split("\\")[-1]
+        filename = p_filename.split(".")[0].split("/")[-1]
         current_datetime = datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
         output_filename = filename + "_output_" + current_datetime + ".csv"
         logging.debug("Output filename: %s" % (output_filename))
@@ -221,20 +221,19 @@ def parseEQRow(p_row):
         # process data row
         trans_date = p_row[0].strip()
         description = p_row[1].strip()
-        credit_amount = p_row[2].strip()
-        debit_amount = p_row[3].strip()
-        # balance = p_row[4].strip()
+        amount = p_row[2].strip()
+        # debit_amount = p_row[3].strip()
+        balance = p_row[3].strip()
         payee = '""'
 
         # build output row
         """
-            Looks like trans_date format changed. Now YYYY-MM-DD
-            which should be acceptable as is
+            Looks like trans_date format changed. Now DD MMM YYYY
         """
-        # temp = trans_date.split("-")
-        # trans_date = str(g_Months.index(temp[1].upper()) + 1).zfill(2)
-        # #get index of trans month from months list, then left pad with zero
-        # trans_date += "/" + temp[0] + "/" + temp[2]  # format: MM/DD/YYYY
+        temp = trans_date.split()
+        trans_date = str(g_Months.index(temp[1].upper()) + 1).zfill(2)
+        #get index of trans month from months list, then left pad with zero
+        trans_date += "/" + temp[0] + "/" + temp[2]  # format: MM/DD/YYYY
 
         data_row = trans_date
         data_row += g_Delim
@@ -242,9 +241,14 @@ def parseEQRow(p_row):
         data_row += g_Delim
         data_row += '"' + description + '"'  # double quote to handle text with commas
         data_row += g_Delim
-        data_row += debit_amount[1:].strip()  # strip off dollar sign
-        data_row += g_Delim
-        data_row += credit_amount[1:].strip()  # strip off dollar sign
+        amount = amount.replace("$", "").replace('"', "").replace(",", "")  # get rid of $ or " or ,
+        if amount.startswith('-'):
+            data_row += amount[1:]
+            data_row += g_Delim
+        else:
+            data_row += g_Delim
+            data_row += amount
+        # end if
 
         logging.debug("Data row: %s" % (data_row))
         return data_row
@@ -708,7 +712,7 @@ def main():
 
         g_InputPath = args[0]
         g_OutputPath = args[1]
-        g_LoadedPath = g_InputPath + r"\\loaded"
+        g_LoadedPath = g_InputPath + r"/loaded"
 
         # get file list using FileTypes filters
         filelist = getFileList(g_InputPath)
