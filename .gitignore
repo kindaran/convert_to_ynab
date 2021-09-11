@@ -9,3 +9,6 @@ _config.yml
 .vscode/
 *.spec
 *.csv
+env/
+loaded/
+env/
