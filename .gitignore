@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 __pycache__/
 .idea/
 .pytest_cache/
@@ -12,3 +13,11 @@ _config.yml
 env/
 loaded/
 env/
+=======
+venv/
+loaded/
+dist/
+build/
+__pycache__/
+*.spec
+>>>>>>> 929c0ab (update for LibreOffice format)
