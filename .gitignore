@@ -1,23 +1,7 @@
-<<<<<<< HEAD
-__pycache__/
-.idea/
-.pytest_cache/
-build/
-dist/
-testing/
-__init__.py
-_config.yml
-.vscode/
-*.spec
-*.csv
-env/
-loaded/
-env/
-=======
 venv/
 loaded/
 dist/
 build/
 __pycache__/
 *.spec
->>>>>>> 929c0ab (update for LibreOffice format)
+

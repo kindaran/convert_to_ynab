@@ -43,11 +43,7 @@ def getArgs():
 def getFileList(p_path):
     try:
         logging.info("***GETTING INPUT DIR FILE LIST")
-<<<<<<< HEAD
-        filelist = [file for file in glob.glob(p_path + g_pathSymbol + "*") if
-=======
         filelist = [file for file in glob.glob(os.path.join(p_path,"*")) if
->>>>>>> 929c0ab (update for LibreOffice format)
                     not os.path.isdir(file) and "_OUTPUT" not in file.upper()]
         logging.debug("Found %s files in directory %s" % (len(filelist), p_path))
         if len(filelist) > 0:
@@ -72,11 +68,7 @@ def writeFile(p_filename, p_rows):
     try:
         logging.info("***WRITING TO OUTPUT FILE")
         if len(p_rows) > 0:
-<<<<<<< HEAD
-            output_file = g_OutputPath + g_pathSymbol + p_filename
-=======
             output_file = os.path.join(g_OutputPath,p_filename)
->>>>>>> 929c0ab (update for LibreOffice format)
             logging.debug('Writing to file: %s' % (output_file))
             with open(output_file, 'w') as hFile:
                 hFile.write(g_CSVHeader)
@@ -96,11 +88,7 @@ def writeFile(p_filename, p_rows):
 def generateOutputFilename(p_filename):
     try:
         # strips the raw filename out of file string
-<<<<<<< HEAD
-        filename = p_filename.split(".")[0].split(g_pathSymbol)[-1]
-=======
         filename = os.path.basename(p_filename).split(".")[0]
->>>>>>> 929c0ab (update for LibreOffice format)
         current_datetime = datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
         output_filename = filename + "_output_" + current_datetime + ".csv"
         logging.debug("Output filename: %s" % (output_filename))
@@ -235,28 +223,11 @@ def parseEQRow(p_row):
         description = p_row[1].strip()
         amount = p_row[2].strip()
         # debit_amount = p_row[3].strip()
-<<<<<<< HEAD
-        balance = p_row[3].strip()
-=======
         # balance = p_row[3].strip()
->>>>>>> 929c0ab (update for LibreOffice format)
         payee = '""'
 
         # build output row
         """
-<<<<<<< HEAD
-            Looks like trans_date format changed. Now DD MMM YYYY
-        """
-        temp = trans_date.split()
-        trans_date = str(g_Months.index(temp[1].upper()) + 1).zfill(2)
-        #get index of trans month from months list, then left pad with zero
-        trans_date += "/" + temp[0] + "/" + temp[2]  # format: MM/DD/YYYY
-
-        data_row = trans_date
-        data_row += g_Delim
-        data_row += payee
-        data_row += g_Delim
-=======
             Looks like trans_date format changed. Now DD-MMM-YYYY
         """
         temp = trans_date.split()
@@ -268,20 +239,10 @@ def parseEQRow(p_row):
         data_row += g_Delim
         # data_row += payee
         # data_row += g_Delim
->>>>>>> 929c0ab (update for LibreOffice format)
         data_row += '"' + description + '"'  # double quote to handle text with commas
         data_row += g_Delim
         amount = amount.replace("$", "").replace('"', "").replace(",", "")  # get rid of $ or " or ,
         if amount.startswith('-'):
-<<<<<<< HEAD
-            data_row += amount[1:]
-            data_row += g_Delim
-        else:
-            data_row += g_Delim
-            data_row += amount
-        # end if
-
-=======
             data_row += amount
             # data_row += g_Delim
         else:
@@ -294,7 +255,6 @@ def parseEQRow(p_row):
         data_row += g_Delim
         data_row += 'EQ '
 
->>>>>>> 929c0ab (update for LibreOffice format)
         logging.debug("Data row: %s" % (data_row))
         return data_row
     except Exception as e:
@@ -395,14 +355,11 @@ def parseEQTRow(p_row):
             data_row += amount
         # end if
 
-<<<<<<< HEAD
-=======
         # append for LibreOffice budget
         data_row += g_Delim
         data_row += g_Delim
         data_row += 'EQ TFSA'
 
->>>>>>> 929c0ab (update for LibreOffice format)
         logging.debug("Data row: %s" % (data_row))
         return data_row
     except Exception as e:
@@ -465,8 +422,6 @@ def processEQTFile(p_file):
 
 # end processEQFile
 
-<<<<<<< HEAD
-=======
 def processSCFile(p_file):
     global g_Delim
     global g_LoadedPath
@@ -557,7 +512,6 @@ def parseSCRow(p_row):
         return None
 
 # END parseEQRow
->>>>>>> 929c0ab (update for LibreOffice format)
 
 def parseMBRow(p_row):
     global g_Delim
@@ -565,19 +519,6 @@ def parseMBRow(p_row):
     try:
         # process data row
         post_date = p_row[1].strip()
-<<<<<<< HEAD
-        description = p_row[2].strip()
-        amount = p_row[4].strip()
-        payee = description
-
-        # build output row
-        logging.debug('Trans date: %s' % (post_date))
-
-        data_row = post_date
-        data_row += g_Delim
-        data_row += '"' + payee + '"'
-        data_row += g_Delim
-=======
         description = p_row[3].strip()[:45]
         amount = p_row[4].strip()
         payee = description
@@ -586,19 +527,10 @@ def parseMBRow(p_row):
 
         data_row = post_date
         data_row += g_Delim
->>>>>>> 929c0ab (update for LibreOffice format)
         data_row += '"' + description + '"'  # double quote to handle text with commas
         data_row += g_Delim
         amount = amount.replace("$", "").replace('"', "").replace(",", "")  # get rid of $ or " or ,
         if amount.startswith('-'):
-<<<<<<< HEAD
-            data_row += g_Delim
-            data_row += amount[1:]
-        else:
-            data_row += amount
-            data_row += g_Delim
-        # end if
-=======
             data_row += amount[1:]
         else:
             data_row += '-'
@@ -609,7 +541,6 @@ def parseMBRow(p_row):
         data_row += g_Delim
         data_row += 'MBNA'
 
->>>>>>> 929c0ab (update for LibreOffice format)
         logging.debug("Data row: %s" % (data_row))
         return data_row
     except Exception as e:
@@ -632,37 +563,6 @@ def processMBFile(p_file):
         with open(file) as csvfile:
             filebuf = csv.reader(csvfile, delimiter=g_Delim)
 
-<<<<<<< HEAD
-            count = 1
-            for cols in filebuf:
-                logging.debug(f"Current row is {cols}")
-                if count == 1:
-                    row = []
-                    row += [cols[0]]
-                    count += 1
-                    continue
-                elif count < 5:
-                    row += [cols[0]]
-                    count += 1
-                    continue
-                else:
-                    row += [cols[0]]
-                    count = 1
-                # END IF
-
-                logging.debug("Processing row: %s" % (row))
-                logging.debug("Cols length: %s" % (len(row)))
-                # skip header rows
-                if len(row) == 0:  # empty row
-                    continue
-                # elif cols[0].find('Date') >= 0:
-                #     continue
-                # elif len(cols[0].strip()) == 0:     #empty row
-                #     continue
-                # process data rows
-                else:
-                    data = parseMBRow(row)
-=======
             for cols in filebuf:
                 logging.debug("Processing row: %s" % (cols))
                 # skip header rows
@@ -675,7 +575,6 @@ def processMBFile(p_file):
                 # process data rows
                 else:
                     data = parseMBRow(cols)
->>>>>>> 929c0ab (update for LibreOffice format)
                     if data is None:
                         logging.warning("Error parsing data row")
                         return
@@ -683,11 +582,7 @@ def processMBFile(p_file):
                         file_data.append(data)
                     # end if
                 # end if parse row
-<<<<<<< HEAD
-            # end for
-=======
              # end for
->>>>>>> 929c0ab (update for LibreOffice format)
             logging.info("File: %s  %d rows processed" % (file, len(file_data)))
 
             # output converted rows
@@ -723,20 +618,6 @@ def parseMBSRow(p_row):
 
         data_row = post_date
         data_row += g_Delim
-<<<<<<< HEAD
-        data_row += '"' + payee + '"'
-        data_row += g_Delim
-        data_row += '"' + description + '"'  # double quote to handle text with commas
-        data_row += g_Delim
-        amount = amount.replace("$", "").replace('"', "").replace(",", "")  # get rid of $ or " or ,
-        if amount.startswith('-'):
-            data_row += amount[1:]
-            data_row += g_Delim
-        else:
-            data_row += g_Delim
-            data_row += amount
-        # end if
-=======
         data_row += '"' + description + '"'  # double quote to handle text with commas
         data_row += g_Delim
         amount = amount.replace("$", "").replace('"', "").replace(",", "")  # get rid of $ or " or ,
@@ -746,7 +627,6 @@ def parseMBSRow(p_row):
         data_row += g_Delim
         data_row += 'MBNA'
 
->>>>>>> 929c0ab (update for LibreOffice format)
         logging.debug("Data row: %s" % (data_row))
         return data_row
     except Exception as e:
@@ -913,11 +793,7 @@ def main():
 
         g_InputPath = args[0]
         g_OutputPath = args[1]
-<<<<<<< HEAD
-        g_LoadedPath = g_InputPath + g_pathSymbol + "loaded"
-=======
         g_LoadedPath = os.path.join(g_InputPath,"loaded")
->>>>>>> 929c0ab (update for LibreOffice format)
 
         # get file list using FileTypes filters
         filelist = getFileList(g_InputPath)
@@ -942,11 +818,8 @@ def main():
                 processMBSFile(file)
             elif "QU_" in file.upper():
                 processQTFile(file)
-<<<<<<< HEAD
-=======
             elif "SC_" in file.upper():
                 processSCFile(file)
->>>>>>> 929c0ab (update for LibreOffice format)
             # end if
         # end for
     except Exception as e:
@@ -961,11 +834,7 @@ def main():
 # Globals
 #####
 
-<<<<<<< HEAD
-g_pathSymbol = "\\"
-=======
 # g_pathSymbol = "/"
->>>>>>> 929c0ab (update for LibreOffice format)
 
 g_LoggingLevel = logging.INFO
 
@@ -976,13 +845,8 @@ logging.info('*****PROGRAM START')
 
 g_Months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 g_Delim = ','
-<<<<<<< HEAD
-g_CSVHeader = 'Date,Payee,Memo,Outflow,Inflow\n'
-g_FileTypes = ['TD', 'EQ', 'MB', 'MBS', 'QU', 'EQT']
-=======
 g_CSVHeader = 'Date,Payee,Amount\n'
 g_FileTypes = ['TD', 'EQ', 'MB', 'MBS', 'QU', 'EQT','SC']
->>>>>>> 929c0ab (update for LibreOffice format)
 
 g_InputPath = None
 g_OutputPath = None
